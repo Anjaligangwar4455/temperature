@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weather</title>
+    <link rel="stylesheet" href="weather.css">
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" placeholder="Enter City Name" spellcheck="false">
+            <button><img src="https://cdn3.iconfinder.com/data/icons/feather-5/24/search-512.png"></button>
+        </div>
+        <div class="error">
+            <p>Invalid city name</p>
+        </div>
+        <div class="weather">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYCfcZrvN1qUttKQ8YbocuKk1jfYpkhz6OffvFPtSXIjIRo6Ii2ODDt4XKY-isLgpFwEc&usqp=CAU" class="weather-icon">
+            <h1 class="temp">22°C</h1>
+            <h2 class="city">New York</h2>
+            <div class="details">
+                <div class="col">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPEEbJgOv9FdQ6YSAgZs3-AY7aJTWdZp_1mA&s">
+                    <div>
+                        <p class="humidity">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUHbRp-FbnkEW8w66lsm3jSW7htPFBiYz4qvzNSoy-Rx4_sqDX5mtmwvcJ95PbPbfaU_4&usqp=CAU">
+                    <div>
+                        <p class="wind">15km/h</p>
+                        <p>Wind Speed</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+
+const apiKey = "5758a956251cca3cf703455bf3740435";
+const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+const searchBox = document.querySelector(".search input");
+const searchBtn = document.querySelector(".search button");
+const weatherIcon = document.querySelector(".weather-icon");
+
+async function checkWeather(city){
+    const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+    if(response.status == 404){
+        document.querySelector(".error").style.display = "block";
+        document.querySelector(".weather").style.display = "none";
+    }else{
+        var data = await response.json();
+
+    
+
+    document.querySelector(".city").innerHTML = data.name;
+    document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+    document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+    document.querySelector(".wind").innerHTML = data.wind.speed + "km/h";
+
+    if(data.weather[0].main == "Clouds"){
+        weatherIcon.src = "https://cdn.jim-nielsen.com/ios/512/weather-2021-12-07.png";
+    
+    }
+    else if(data.weather[0].main == "Clear"){
+        weatherIcon.src = "https://static.vecteezy.com/system/resources/thumbnails/010/989/531/small_2x/hot-weather-3d-rendering-isolated-on-transparent-background-ui-ux-icon-design-web-and-app-trend-png.png";
+    }
+    else if(data.weather[0].main == "Rain"){
+        weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/4724/4724091.png";
+    }
+    else if(data.weather[0].main == "Drizzle"){
+        weatherIcon.src = "https://i.pinimg.com/originals/de/4f/61/de4f618c20951e5c725511c9e2c69649.png";
+    }
+    else if(data.weather[0].main == "Mist"){
+        weatherIcon.src = "https://png.pngtree.com/png-vector/20220621/ourmid/pngtree-daytime-foggy-weather-clouds-illustration-png-image_5246770.png";
+    }
+
+    document.querySelector(".weather").style.display = "block";
+    document.querySelector(".error").style.display = "none";
+    }
+
+    
+
+
+}
+
+searchBtn.addEventListener("click", ()=>{
+    checkWeather(searchBox.value);
+})
+
+
+</script>
+
+</body>
+</html>
